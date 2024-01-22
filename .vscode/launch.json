@@ -1,0 +1,18 @@
+
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Python: Streamlit",
+        "type": "python",
+        "request": "launch", 
+        "preLaunchTask": "Streamlit: Launch",
+        "program": "./app.py",
+        "console": "integratedTerminal",
+        "justMyCode": true,
+        "args": [
+          "--server.port=5678" 
+        ]
+      }
+    ]
+  }
