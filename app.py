@@ -5,10 +5,24 @@ UserProxyAgent is used to send messages to the AssistantAgent. The AssistantAgen
 
 """
 
+# for debugging
+import debugpy
+# Start the debugger on port 5678
+#debugpy.listen(('0.0.0.0', 5678))
+# Wait for the debugger to attach
+#debugpy.wait_for_client()
 
 import streamlit as st
 import asyncio
 from autogen import AssistantAgent, UserProxyAgent
+
+import dotenv
+import os
+
+dotenv.load_dotenv() 
+
+OPENAI_KEY = os.getenv("OPENAI_KEY")
+
 
 # setup page title and description
 st.set_page_config(page_title="AutoGen Chat app", page_icon="🤖", layout="wide")
@@ -59,8 +73,8 @@ with st.sidebar:
     st.markdown(
         "For more information about the models, see [here](https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo)."
     )
-    selected_key = st.text_input("API Key", type="password")
-
+    selected_key = st.text_input("API Key", type="password", value=OPENAI_KEY)
+  
 # setup main area: user input and chat messages
 with st.container():
     user_input = st.text_input("User Input")
@@ -104,7 +118,7 @@ with st.container():
                 await user_proxy.a_initiate_chat(
                     assistant,
                     message=user_input,
-                    max_consecutive_auto_reply=5,
+                    max_consecutive_auto_reply=0,
                     is_termination_msg=lambda x: x.get("content", "").strip().endswith("TERMINATE"),
                 )
                 st.stop()  # Stop code execution after termination command
