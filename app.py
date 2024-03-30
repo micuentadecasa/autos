@@ -90,7 +90,8 @@ with st.container():
                 {"model": selected_model, "api_key": selected_key},
             ],
             "seed": 42,  # seed for reproducibility
-            "temperature": 0,  # temperature of 0 means deterministic output
+            "temperature": 0,  # temperature of 0 means deterministic output,
+            "max_tokens": 256,  # max number of tokens to generate  # solves the bug with pickle TypeError: cannot pickle '_thread.RLock' object
         }
         # create an AssistantAgent instance named "assistant"
         assistant = TrackableAssistantAgent(name="assistant", llm_config=llm_config)
