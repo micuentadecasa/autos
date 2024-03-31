@@ -14,7 +14,8 @@ import debugpy
 
 import streamlit as st
 import asyncio
-from autogen import AssistantAgent, UserProxyAgent
+from autogen import AssistantAgent, UserProxyAgent, GroupChat, GroupChatManager
+
 
 import dotenv
 import os
@@ -94,7 +95,7 @@ with st.container():
             "max_tokens": 256,  # max number of tokens to generate  # solves the bug with pickle TypeError: cannot pickle '_thread.RLock' object
         }
         # create an AssistantAgent instance named "assistant"
-        assistant = TrackableAssistantAgent(name="assistant", llm_config=llm_config)
+        assistant = TrackableAssistantAgent(name="assistant", llm_config=llm_config,system_message="an expert in chatbots")
 
         # create a UserProxyAgent instance named "user"
         # human_input_mode is set to "NEVER" to prevent the agent from asking for user input
@@ -104,6 +105,19 @@ with st.container():
             llm_config=llm_config,
             is_termination_msg=lambda x: x.get("content", "").strip().endswith("TERMINATE"),
         )
+
+        groupchat = GroupChat(
+        agents=[
+            user_proxy,
+            assistant
+        ],
+        messages=[],
+        max_round=12
+        )
+        manager = GroupChatManager(groupchat=groupchat, llm_config=llm_config)
+
+        
+
 
         # Create an event loop: this is needed to run asynchronous functions
         loop = asyncio.new_event_loop()
@@ -116,12 +130,10 @@ with st.container():
         if not st.session_state.chat_initiated:
 
             async def initiate_chat():
-                await user_proxy.a_initiate_chat(
-                    assistant,
-                    message=user_input,
-                    max_consecutive_auto_reply=0,
-                    is_termination_msg=lambda x: x.get("content", "").strip().endswith("TERMINATE"),
+                user_proxy.initiate_chat(
+                    manager, message=user_input
                 )
+                
                 st.stop()  # Stop code execution after termination command
 
             # Run the asynchronous function within the event loop
