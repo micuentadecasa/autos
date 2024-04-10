@@ -13,7 +13,7 @@ except ImportError:
 # Configuration - Users/AI skill developers must update this path to their specific index folder
 # To test with sample data set index_folder to "knowledge"
 CONFIG = {
-    "index_folder": "knowledge",  # TODO: Update this path before using
+    "index_folder": "/users/luis/Documents/rag/1on1",  # TODO: Update this path before using
 }
 
 class DocumentRetriever:
@@ -116,7 +116,7 @@ if __name__ == "__main__":
     parser.add_argument('query', nargs='?', type=str, help='The query to retrieve documents for.')
     args = parser.parse_args()
 
-    #args.query = "when was the latest 1on1?"
+    #args.query = "when was the latest 1on1 with David?"
 
     if not args.query:
         parser.print_help()

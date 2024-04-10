@@ -35,6 +35,12 @@ st.markdown(
 st.markdown("An example a question you can ask is: 'How is the S&P 500 doing today? Summarize the news for me.'")
 st.markdown("Start by getting an API key from OpenAI. You can get one [here](https://openai.com/pricing).")
 
+from agentRag1on1 import agentRag1on1class
+class Trackable1on1Agent(agentRag1on1class):
+    def _process_received_message(self, message, sender, silent):
+            with st.chat_message(sender.name):
+                st.markdown(message)
+            return super()._process_received_message(message, sender, silent)
 
 class TrackableAssistantAgent(AssistantAgent):
     """
@@ -95,13 +101,14 @@ with st.container():
             "max_tokens": 256,  # max number of tokens to generate  # solves the bug with pickle TypeError: cannot pickle '_thread.RLock' object
         }
         # create an AssistantAgent instance named "assistant"
-        assistant = TrackableAssistantAgent(name="assistant", llm_config=llm_config,system_message="an expert in chatbots")
-
+        assistant = TrackableAssistantAgent(name="assistant_hula", llm_config=llm_config,system_message="ask me when you need something about hulahoop")
+        assistantProjects = TrackableAssistantAgent(name="assistant_project", llm_config=llm_config,system_message="ask me when you need something about projects")
+        assistant1on1 = Trackable1on1Agent(name="assistant_1on1", llm_config=llm_config,system_message="ask me when you need something about 1on1s")
         # create a UserProxyAgent instance named "user"
         # human_input_mode is set to "NEVER" to prevent the agent from asking for user input
         user_proxy = TrackableUserProxyAgent(
             name="user",
-            human_input_mode="NEVER",
+            human_input_mode="ALWAYS",
             llm_config=llm_config,
             is_termination_msg=lambda x: x.get("content", "").strip().endswith("TERMINATE"),
         )
@@ -109,7 +116,9 @@ with st.container():
         groupchat = GroupChat(
         agents=[
             user_proxy,
-            assistant
+            assistant, 
+            assistantProjects,
+            assistant1on1
         ],
         messages=[],
         max_round=12

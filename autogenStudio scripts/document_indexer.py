@@ -302,7 +302,7 @@ if __name__ == "__main__":
         "--output_path",
         help="the path of the output",
         type=str,
-        default="knowledge",
+        default="/users/luis/Documents/rag/1on1",
     )
     args = parser.parse_args()
 

@@ -4,7 +4,7 @@ from autogen import AssistantAgent
 import streamlit as st
 import matplotlib.pyplot as plt
 
-class agentRag1on1 (AssistantAgent):
+class agentRag1on1class (AssistantAgent):
     def __init__(self, custom_prompt="", *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.custom_prompt = custom_prompt
